@@ -1,13 +1,15 @@
 FROM nodesource/jessie:4.4.4
 
-# Add compiled source files
-ADD ./dist ./
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-#Install node dependencies
+# Install app dependencies
+COPY package.json /usr/src/app/
 RUN npm install --production
 
-#Expose node app to world
-EXPOSE 8000
+# Bundle app source
+COPY ./dist/ /usr/src/app/
 
-#Start application
-CMD ["npm","start"]
+EXPOSE 8000
+CMD [ "npm", "start" ]
