@@ -1,7 +1,7 @@
 FROM nodesource/jessie:4.4.4
 
 # Add compiled source files
-ADD ./shippable/buildoutput ./
+ADD ./dist ./
 
 #Install node dependencies
 RUN npm install --production
