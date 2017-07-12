@@ -1,5 +1,6 @@
 dist
 static
+build
 shippable
 coverage
 npm-debug.log
