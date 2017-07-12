@@ -1,0 +1,6 @@
+dist
+static
+shippable
+coverage
+npm-debug.log
+node_modules
