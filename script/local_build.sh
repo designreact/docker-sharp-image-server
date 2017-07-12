@@ -3,7 +3,7 @@ BRANCH=master
 BUILD_NUMBER=1.0.0
 AWSID=$AWSID
 AWSREGION=eu-west-1
-EC2=savills-image-processor
+EC2=designreact
 
 echo $PROJECT.$BRANCH.$BUILD_NUMBER
 

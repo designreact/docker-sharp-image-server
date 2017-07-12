@@ -53,7 +53,7 @@ function addImage(stream) {
   return new Promise((resolve, reject) => {
     let bits = stream.split('.')
     const extension = bits[bits.length - 1]
-    bits = stream.split('filename=')
+    bits = stream.split(serverConfig.origin)
     let name = bits[bits.length - 1]
     name = name.substr(0, name.lastIndexOf('.'))
     const config = {

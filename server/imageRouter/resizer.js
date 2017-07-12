@@ -12,48 +12,32 @@ sharp.cache(false)
 
 function download(uri, filePath) {
   return new Promise((resolve, reject) => {
-    request({
-      method: 'GET',
-      uri,
-    }
-    , (nsErr, response, body) => {
-      if (nsErr) {
-        reject(nsErr)
-        return
-      }
-      const data = JSON.parse(body)
-      if (data.url && data.url.length) {
-        const writeStream = s3Fs.createWriteStream(filePath)
-        request(`${serverConfig.nsRoot}${data.url}`)
-        .pipe(writeStream)
-        /*
-         * BEGIN PIPE ON CLOSE HACK
-         * FIXME pipe.on close not being called. Dirty timeout hack below.
-         */
-        let count = 0
-        function checkImage() {
-          s3Fs.readFile(filePath)
-          .then(() => {
-            resolve(filePath)
-          })
-          .catch(() => {
-            count ++
-            if (count < 20) setTimeout(checkImage, 250)
-            else {
-              console.log(Date(), filePath, 'Image not saved to s3')
-              reject('Image not saved')
-            }
-          })
+    const writeStream = s3Fs.createWriteStream(filePath)
+    request(uri)
+    .pipe(writeStream)
+    /*
+     * BEGIN PIPE ON CLOSE HACK
+     * FIXME pipe.on close not being called. Dirty timeout hack below.
+     */
+    let count = 0
+    function checkImage() {
+      s3Fs.readFile(filePath)
+      .then(() => {
+        resolve(filePath)
+      })
+      .catch(() => {
+        count ++
+        if (count < 20) setTimeout(checkImage, 250)
+        else {
+          console.log(Date(), filePath, 'Image not saved to s3')
+          reject('Image not saved')
         }
-        setTimeout(checkImage, 1000)
-        /*
-         * END PIPE ON CLOSE HACK
-         */
-      } else {
-        console.log(Date(), filePath, 'Image url not supplied by ns')
-        reject('Image url not supplied by ns')
-      }
-    })
+      })
+    }
+    setTimeout(checkImage, 1000)
+    /*
+     * END PIPE ON CLOSE HACK
+     */
   })
 }
 
